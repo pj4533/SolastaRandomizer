@@ -6,14 +6,18 @@ func routes(_ app: Application) throws {
     app.get { req in
         req.view.render("index", [
             "title": "SolastaRandomizer",
-            "body": "Solasta Dungeon Randomizer"
+            "body": "Solasta Dungeon Randomizer",
+            "level": "5",
+            "difficulty": "Hard"
         ])
     }
 
     app.get("randomize") { req in
         req.view.render("index", [
             "title": "SolastaRandomizer",
-            "body": "Solasta Dungeon Randomizer"
+            "body": "Solasta Dungeon Randomizer",
+            "level": "5",
+            "difficulty": "Hard"
         ])
     }
 
@@ -22,8 +26,8 @@ func routes(_ app: Application) throws {
         let data = dungeonContent.raw?.data(using: .utf8) ?? Data()
         var randomized : String = ""
         
-        var level = 5
-        var difficulty: Difficulty = .hard
+        let level = dungeonContent.level ?? 5
+        let difficulty: Difficulty = Difficulty(rawValue: dungeonContent.difficulty?.lowercased() ?? "hard") ?? .hard
         
         let decoder = JSONDecoder()
         var dungeon = try decoder.decode(Dungeon.self, from: data)
@@ -68,7 +72,9 @@ func routes(_ app: Application) throws {
             "title": "SolastaRandomizer",
             "body": "Solasta Dungeon Randomizer",
             "raw": dungeonContent.raw ?? "",
-            "randomized": randomized
+            "randomized": randomized,
+            "level": "\(level)",
+            "difficulty": "\(difficulty.rawValue.capitalized)"
         ])
     }
 
